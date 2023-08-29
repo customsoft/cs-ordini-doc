@@ -1,0 +1,74 @@
+@startuml architetturacs-ordini
+
+skinparam actorStyle awesome
+left to right direction
+
+rectangle Autorizzati {
+  actor Iscritto as i #LightGreen;line:green;text:green
+  actor Operatore as o #LightBlue;line:blue;text:blue
+  actor "Altre persone" as ap #pink;line:red;text:red
+  (Altri software) as os #LightGray;line:black;text:black
+}
+
+rectangle Server-Ubuntu-01 {
+  package Docker-Vue {
+    usecase "Interfaccia web" as vue
+  }
+  package Docker-Api {
+    usecase "API" as api
+  }
+  package Docker-Cache {
+    usecase "Redis" as redis
+  }
+  package Docker-DB {
+    usecase "MariaDb" as mariaDb
+  }
+  package Docker-Doc {
+    usecase "Documentazione" as doc
+  }
+  package Docker-Log {
+    usecase "sysLog" as log
+  }
+}
+
+rectangle Altro-Server-02 {
+  package Docker-Backup {
+    usecase "Backup dati" as backup
+  }
+}
+
+rectangle Altro-Server-03 {
+  package Docker-Cloud {
+    usecase "Area documentale" as documentale
+  }
+}
+
+rectangle Servizi-Esterni {
+  usecase serviziEsterni #LightGray;line:black;text:black as "
+PDND
+--
+ANPR 
+--
+API altri enti
+--
+..ecc...
+"
+}
+
+i <--> vue
+o <--> vue
+ap <--> vue
+vue <--> api
+os <--> api
+api <--> doc
+api <--> redis
+api <--> mariaDb
+api <--> log
+api <--> backup
+mariaDb --> backup
+documentale --> backup
+api <--> documentale
+api <--> serviziEsterni
+
+
+@enduml
